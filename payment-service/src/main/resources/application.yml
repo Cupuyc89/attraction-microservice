@@ -1,0 +1,17 @@
+server:
+  port: 8084
+
+spring:
+  liquibase:
+    enabled: false
+
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5437/attr_micro_payment_db
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true

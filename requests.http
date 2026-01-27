@@ -1,0 +1,53 @@
+###
+GET http://localhost:8080/cities/
+Accept: */*
+Content-Type: application/json
+Cache-Control: no-cache
+
+###
+GET http://localhost:8080/cities/1
+Accept: */*
+Content-Type: application/json
+Cache-Control: no-cache
+
+###
+GET http://localhost:8080/home/
+Accept: */*
+Content-Type: application/json
+Cache-Control: no-cache
+
+###
+GET http://localhost:8080/
+Accept: */*
+Content-Type: text/html
+Cache-Control: no-cache
+
+###
+GET http://localhost:8082/ticket/
+Accept: */*
+Content-Type: application/json
+Cache-Control: no-cache
+
+###
+GET http://localhost:8083/order
+Accept: */*
+Content-Type: application/json
+Cache-Control: no-cache
+
+###
+GET http://localhost:8083/user
+Accept: */*
+Content-Type: application/json
+Cache-Control: no-cache
+
+###
+POST http://localhost:8084/payment
+Accept: */*
+Content-Type: application/json
+Cache-Control: no-cache
+
+{
+  "cardNumber": "0000838412411234",
+  "cardHolder": "Ivanov Ivan",
+  "cvc": "457"
+}

@@ -1,0 +1,17 @@
+server:
+  port: 8083
+
+spring:
+  liquibase:
+    enabled: false
+
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5436/attr_micro_order_db
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true

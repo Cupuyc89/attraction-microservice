@@ -1,0 +1,26 @@
+name: attr_micro_payment
+
+services:
+  attr_micro_payment_db:
+    # image postgres:15.1-alpine3.16
+    image: postgres:15.1-alpine3.16
+    container_name: attr_micro_payment_db
+    hostname: attr_micro_payment_db
+    restart: always
+    env_file: db_config.env
+    volumes:
+      - attr_micro_payment_db:/var/lib/postgresql/data
+      #- ./scripts:/docker-entrypoint-initdb.d
+    ports:
+      - "127.0.0.1:5437:5432"
+    networks:
+      - attraction_microservice
+
+  #attr_micro_payment_app: TODO
+
+volumes:
+  attr_micro_payment_db:
+
+networks:
+  attraction_microservice:
+    driver: bridge

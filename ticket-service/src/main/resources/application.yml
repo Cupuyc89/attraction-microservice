@@ -1,0 +1,17 @@
+server:
+  port: 8082
+
+spring:
+  liquibase:
+    enabled: false
+
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5435/attr_micro_ticket_db
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
