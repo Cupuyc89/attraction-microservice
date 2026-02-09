@@ -1,15 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>ru.petProjects</groupId>
     <artifactId>attraction-microservices</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
+
   <artifactId>ticket-service</artifactId>
   <packaging>war</packaging>
   <name>ticket-service Maven Webapp</name>
   <url>http://maven.apache.org</url>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -18,6 +21,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
     <finalName>ticket-service</finalName>
   </build>
