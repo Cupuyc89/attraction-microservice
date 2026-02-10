@@ -13,7 +13,7 @@ import ru.pet_projects.ticket_service.repository.TicketRepository;
 import java.time.LocalDate;
 import java.util.Optional;
 
-
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -43,5 +43,28 @@ class TicketControllerTest {
                 .andExpect(jsonPath("$.dateOfStartExcursion").value("2026-08-20"))
                 .andExpect(jsonPath("$.dateOfEndExcursion").value("2026-08-30"))
                 .andExpect(jsonPath("$.booking").value("BOOKED"));
+    }
+
+    @Test
+    void createTest() throws Exception{
+        Ticket ticket =  new Ticket(1L, 1L, 1234,
+                LocalDate.of(2026,8,20),
+                LocalDate.of(2026,8,30),
+                Booking.BOOKED);
+        when(ticketRepository.save(any(Ticket.class))).thenReturn(ticket);
+
+        mockMvc.perform(post("/ticket/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"id\":\"null\",\"excursionId\":\"1\"," +
+                                "\"dateOfStartExcursion\":\"2026-08-20\"," +
+                                "\"dateOfEndExcursion\":\"2026-08-30\"," +
+                                "\"booking\":\"BOOKED\"}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.excursionId").value(1))
+                .andExpect(jsonPath("$.dateOfStartExcursion").value("2026-08-20"))
+                .andExpect(jsonPath("$.dateOfEndExcursion").value("2026-08-30"))
+                .andExpect(jsonPath("$.booking").value("BOOKED"));
+
     }
 }

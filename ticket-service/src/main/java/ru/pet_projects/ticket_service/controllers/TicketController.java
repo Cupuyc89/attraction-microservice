@@ -2,10 +2,8 @@ package ru.pet_projects.ticket_service.controllers;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import ru.pet_projects.ticket_service.entities.Ticket;
 import ru.pet_projects.ticket_service.repository.TicketRepository;
 
@@ -34,4 +32,11 @@ public class TicketController {
                 .orElseThrow(( ) ->
                         new EntityNotFoundException("Ticket is not found."));
     }
+
+    @PostMapping("/")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Ticket create(@RequestBody Ticket ticket){
+        return ticketRepository.save(ticket);
+    }
+
 }
