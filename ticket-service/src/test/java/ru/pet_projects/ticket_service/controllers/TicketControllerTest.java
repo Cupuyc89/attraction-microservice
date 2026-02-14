@@ -56,15 +56,18 @@ class TicketControllerTest {
         mockMvc.perform(post("/ticket/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"id\":\"null\",\"excursionId\":\"1\"," +
+                                "\"price\":\"1234\"}" +
                                 "\"dateOfStartExcursion\":\"2026-08-20\"," +
                                 "\"dateOfEndExcursion\":\"2026-08-30\"," +
                                 "\"booking\":\"BOOKED\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.excursionId").value(1))
+                .andExpect(jsonPath("$.price").value(1234))
                 .andExpect(jsonPath("$.dateOfStartExcursion").value("2026-08-20"))
                 .andExpect(jsonPath("$.dateOfEndExcursion").value("2026-08-30"))
                 .andExpect(jsonPath("$.booking").value("BOOKED"));
-
     }
+
+
 }
