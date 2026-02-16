@@ -39,7 +39,7 @@ public class TicketController {
         return ticketRepository.save(ticket);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public Ticket update(@RequestBody Ticket ticket, @PathVariable Long id){
         return ticketRepository.findById(id)
                 .map(s -> {
@@ -52,5 +52,13 @@ public class TicketController {
                 })
                 .orElseThrow(() ->
                         new EntityNotFoundException("Ticket is not found."));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id){
+        ticketRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException(""));
+        ticketRepository.deleteById(id);
     }
 }
