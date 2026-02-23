@@ -13,7 +13,7 @@ import ru.pet_projects.order_service.repository.OrderRepository;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -54,5 +54,22 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.orderStatus").value("PLACED"))
                 .andExpect(jsonPath("$.excursionId").value(1));
+    }
+
+    @Test
+    void deleteTest() throws Exception{
+        Long id =1L;
+
+        Order order = new Order(id, OrderLifeCycle.PLACED,
+                null, id);
+        when(orderRepository.findById(id)).thenReturn(Optional.of(order));
+
+        doNothing().when(orderRepository).deleteById(id);
+
+        mockMvc.perform(delete("/order/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        verify(orderRepository).deleteById(id);
     }
 }

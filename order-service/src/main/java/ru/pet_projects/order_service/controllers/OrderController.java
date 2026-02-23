@@ -27,7 +27,8 @@ public class OrderController {
 
     @GetMapping("/{id}")
     public Order getById(@PathVariable Long id){
-        return orderRepository.findById(id)
+        return orderRepository
+                .findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(""));
     }
 
@@ -35,5 +36,14 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     public Order create(@RequestBody Order order){
         return orderRepository.save(order);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void delete(@PathVariable Long id){
+        orderRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(""));
+        orderRepository.deleteById(id);
     }
 }
