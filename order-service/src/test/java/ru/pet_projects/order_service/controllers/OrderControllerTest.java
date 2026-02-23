@@ -57,6 +57,28 @@ class OrderControllerTest {
     }
 
     @Test
+    void updateTest() throws Exception{
+        Long id = 1L;
+
+        Order oldOrder = new Order(id, OrderLifeCycle.CANCELED,
+                null, 2L);
+        when(orderRepository.findById(id)).thenReturn(Optional.of(oldOrder));
+
+        Order order = new Order(id, OrderLifeCycle.PLACED,
+                null, id);
+        when(orderRepository.save(any(Order.class))).thenReturn(order);
+
+        mockMvc.perform(put("/order/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"id\":\"1\",\"excursionId\":\"1\"," +
+                                "\"orderStatus\":\"PLACED\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.orderStatus").value("PLACED"))
+                .andExpect(jsonPath("$.excursionId").value(1));
+    }
+
+    @Test
     void deleteTest() throws Exception{
         Long id =1L;
 

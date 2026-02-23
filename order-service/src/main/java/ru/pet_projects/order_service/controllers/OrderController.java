@@ -38,6 +38,17 @@ public class OrderController {
         return orderRepository.save(order);
     }
 
+    @PutMapping("/{id}")
+    public Order update(@PathVariable Long id, @RequestBody Order order){
+        return orderRepository.findById(id)
+                .map(s -> {
+                    s.setOrderStatus(order.getOrderStatus());
+                    s.setExcursionId(order.getExcursionId());
+                    return orderRepository.save(s);
+                })
+                .orElseThrow(()-> new EntityNotFoundException(""));
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void delete(@PathVariable Long id){
