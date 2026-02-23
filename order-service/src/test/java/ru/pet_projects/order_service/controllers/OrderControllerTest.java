@@ -12,6 +12,7 @@ import ru.pet_projects.order_service.repository.OrderRepository;
 
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -34,6 +35,22 @@ class OrderControllerTest {
         mockMvc.perform(get("/order/1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.orderStatus").value("PLACED"))
+                .andExpect(jsonPath("$.excursionId").value(1));
+    }
+
+    @Test
+    void createTest() throws Exception{
+        Order order = new Order(1L, OrderLifeCycle.PLACED,
+                null, 1L);
+        when(orderRepository.save(any(Order.class))).thenReturn(order);
+
+        mockMvc.perform(post("/order/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"id\":\"null\",\"excursionId\":\"1\"," +
+                        "\"orderStatus\":\"PLACED\"}"))
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.orderStatus").value("PLACED"))
                 .andExpect(jsonPath("$.excursionId").value(1));

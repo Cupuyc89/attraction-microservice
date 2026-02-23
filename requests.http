@@ -29,7 +29,7 @@ Content-Type: application/json
 Cache-Control: no-cache
 
 ###
-GET http://localhost:8083/order
+GET http://localhost:8083/order/1
 Accept: */*
 Content-Type: application/json
 Cache-Control: no-cache
