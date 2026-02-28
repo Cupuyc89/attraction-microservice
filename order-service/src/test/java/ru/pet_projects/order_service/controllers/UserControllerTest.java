@@ -86,4 +86,19 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.email").value("admin@admin.com"))
                 .andExpect(jsonPath("$.orders[0].excursionId").value(2));
     }
+
+    @Test
+    void deleteUserTest() throws Exception{
+        User user = new User(1L, "admn", "admn@admin.com",
+                List.of(new Order(1L, OrderLifeCycle.PLACED,
+                        null, 1L)));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        doNothing().when(userRepository).deleteById(1L);
+
+        mockMvc.perform(delete("/user/1"))
+                .andExpect(status().isNoContent());
+
+        verify(userRepository).deleteById(1L);
+    }
 }

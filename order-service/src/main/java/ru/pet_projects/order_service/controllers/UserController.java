@@ -51,4 +51,13 @@ public class UserController {
                 .orElseThrow(()-> new EntityNotFoundException(""));
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id){
+        userRepository
+                .findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("There is no user"));
+
+        userRepository.deleteById(id);
+    }
 }
