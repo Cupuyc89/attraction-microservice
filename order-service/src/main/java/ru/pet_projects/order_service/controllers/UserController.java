@@ -37,4 +37,18 @@ public class UserController {
     public User create(@RequestBody User user){
         return userRepository.save(user);
     }
+
+    @PutMapping("/{id}")
+    public User update(@PathVariable Long id, @RequestBody User user){
+        return userRepository
+                .findById(id)
+                .map(s -> {
+                    s.setName(user.getName());
+                    s.setEmail(user.getEmail());
+                    s.setOrders(user.getOrders());
+                    return userRepository.save(s);
+                })
+                .orElseThrow(()-> new EntityNotFoundException(""));
+    }
+
 }

@@ -64,4 +64,26 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.email").value("admn@admin.com"))
                 .andExpect(jsonPath("$.orders").isNotEmpty());
     }
+
+    @Test
+    void updateUserTest() throws Exception{
+        User oldUser = new User(1L, "admn", "admn@admin.com",
+                List.of(new Order(1L, OrderLifeCycle.PLACED,
+                        null, 1L)));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(oldUser));
+
+        User user = new User(1L, "admin", "admin@admin.com",
+                List.of(new Order(1L, OrderLifeCycle.PAID,
+                        null, 2L)));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        mockMvc.perform(put("/user/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(user)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.name").value("admin"))
+                .andExpect(jsonPath("$.email").value("admin@admin.com"))
+                .andExpect(jsonPath("$.orders[0].excursionId").value(2));
+    }
 }
