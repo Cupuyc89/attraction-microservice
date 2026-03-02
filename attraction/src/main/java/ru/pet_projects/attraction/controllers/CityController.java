@@ -1,9 +1,8 @@
 package ru.pet_projects.attraction.controllers;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.pet_projects.attraction.entities.City;
 import ru.pet_projects.attraction.repository.CityRepository;
 
@@ -28,6 +27,6 @@ public class CityController {
     public City getById(@PathVariable Long id) {
         return cityRepository
                 .findById(id)
-                .orElseThrow();
+                .orElseThrow(()-> new EntityNotFoundException("City not found"));
     }
 }
