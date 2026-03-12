@@ -1,6 +1,6 @@
 package ru.pet_projects.attraction.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class Excursion {
     @Column(name = "description")
     private String description;
 
-    @JsonBackReference
+    @JsonManagedReference
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "ATTRACTIONS_EXCURSIONS",
             joinColumns = @JoinColumn(name = "EXCURSION_ID",

@@ -2,7 +2,7 @@ package ru.pet_projects.attraction.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -38,7 +38,7 @@ public class Attraction {
     @JoinColumn(name = "city_id")
     private City city;
 
-    @JsonManagedReference
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "ATTRACTIONS_EXCURSIONS",
             joinColumns = @JoinColumn(name = "ATTRACTION_ID",

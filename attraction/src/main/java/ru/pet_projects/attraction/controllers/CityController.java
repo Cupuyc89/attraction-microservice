@@ -2,6 +2,7 @@ package ru.pet_projects.attraction.controllers;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.pet_projects.attraction.entities.City;
 import ru.pet_projects.attraction.repository.CityRepository;
@@ -29,4 +30,11 @@ public class CityController {
                 .findById(id)
                 .orElseThrow(()-> new EntityNotFoundException("City not found"));
     }
+
+    @PostMapping("/city/")
+    @ResponseStatus(HttpStatus.CREATED)
+    public City create(@RequestBody City city){
+        return cityRepository.save(city);
+    }
+
 }

@@ -1,5 +1,8 @@
 package ru.pet_projects.attraction.controllers;
 
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -48,6 +51,38 @@ class CityControllerTest {
                             .value("Attraction"))
                 .andExpect(jsonPath("$.attractionList[0].id")
                             .value(1))
+                .andExpect(jsonPath("$.hasSubway").value(true));
+    }
+
+
+    @Test
+    void createCityTest() throws Exception{
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        Attraction attraction = new Attraction(1L, "Attraction",
+                LocalDate.EPOCH, "attraction", KindOfAttraction.OTHER,
+                null, null);
+
+        City cityJson = new City(null, "Name",
+                123456, List.of(attraction), true);
+
+        City city = new City(1L, "Name", 123456,
+                List.of(attraction), true);
+        when(cityRepository.save(any(City.class))).thenReturn(city);
+
+        mockMvc.perform(post("/city/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(cityJson)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Name"))
+                .andExpect(jsonPath("$.population").value(123456))
+                .andExpect(jsonPath("$.attractionList[0].name")
+                        .value("Attraction"))
+                .andExpect(jsonPath("$.attractionList[0].id")
+                        .value(1))
                 .andExpect(jsonPath("$.hasSubway").value(true));
     }
 }
