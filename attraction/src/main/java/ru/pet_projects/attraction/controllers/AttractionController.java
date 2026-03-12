@@ -1,5 +1,6 @@
 package ru.pet_projects.attraction.controllers;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,7 +13,7 @@ import java.util.List;
 @RestController
 public class AttractionController {
 
-    private AttractionRepository attractionRepository;
+    private final AttractionRepository attractionRepository;
 
     @Autowired
     public AttractionController(AttractionRepository attractionRepository) {
@@ -28,6 +29,6 @@ public class AttractionController {
     public Attraction getById(@PathVariable Long id) {
         return attractionRepository
                 .findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new EntityNotFoundException("Attraction not found"));
     }
 }
