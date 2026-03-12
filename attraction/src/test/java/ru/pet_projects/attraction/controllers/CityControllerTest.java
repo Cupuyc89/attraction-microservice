@@ -112,4 +112,17 @@ class CityControllerTest {
                 .andExpect(jsonPath("$.population").value(123456))
                 .andExpect(jsonPath("$.hasSubway").value(true));
     }
+
+    @Test
+    void deleteCityTest() throws Exception{
+        City city = new City(1L, "Name",
+                123456, List.of(), true);
+        when(cityRepository.findById(1L)).thenReturn(Optional.of(city));
+
+        doNothing().when(cityRepository).deleteById(1L);
+
+        mockMvc.perform(delete("/city/1"))
+                .andExpect(status().isNoContent());
+        verify(cityRepository).deleteById(1L);
+    }
 }

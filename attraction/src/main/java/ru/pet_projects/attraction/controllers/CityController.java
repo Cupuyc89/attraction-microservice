@@ -50,4 +50,13 @@ public class CityController {
                 })
                 .orElseThrow(()-> new EntityNotFoundException("City not found"));
     }
+
+    @DeleteMapping("/city/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id){
+        cityRepository
+                .findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("City not found"));
+        cityRepository.deleteById(id);
+    }
 }
