@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 public class CityController {
 
-    private CityRepository cityRepository;
+    private final CityRepository cityRepository;
 
     @Autowired
     public CityController(CityRepository cityRepository) {
@@ -37,4 +37,17 @@ public class CityController {
         return cityRepository.save(city);
     }
 
+    @PutMapping("/city/{id}")
+    public City update(@PathVariable Long id, @RequestBody City city){
+        return cityRepository
+                .findById(id)
+                .map(c -> {
+                    c.setName(city.getName());
+                    c.setHasSubway(city.isHasSubway());
+                    c.setPopulation(city.getPopulation());
+                    c.setAttractionList(city.getAttractionList());
+                    return cityRepository.save(c);
+                })
+                .orElseThrow(()-> new EntityNotFoundException("City not found"));
+    }
 }
