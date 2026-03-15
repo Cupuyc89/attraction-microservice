@@ -52,4 +52,13 @@ public class AttractionController {
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Attraction not found"));
     }
+
+    @DeleteMapping("/attraction/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void delete(@PathVariable Long id) {
+        attractionRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Attraction not found"));
+        attractionRepository.deleteById(id);
+    }
 }

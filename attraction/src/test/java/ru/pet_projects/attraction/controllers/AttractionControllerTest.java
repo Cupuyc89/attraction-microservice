@@ -93,4 +93,17 @@ class AttractionControllerTest {
                 .andExpect(jsonPath("$.kindOfAttraction").value(KindOfAttraction.OTHER.toString()));
 
     }
+
+    @Test
+    void deleteAttractionTest() throws Exception {
+        Attraction attraction = new Attraction(1L, "Name", LocalDate.EPOCH,
+                "Description", KindOfAttraction.OTHER, null, null);
+        when(attractionRepository.findById(1L)).thenReturn(Optional.of(attraction));
+
+        doNothing().when(attractionRepository).deleteById(1L);
+
+        mockMvc.perform(delete("/attraction/1"))
+                .andExpect(status().isNoContent());
+        verify(attractionRepository).deleteById(1L);
+    }
 }
