@@ -2,9 +2,8 @@ package ru.pet_projects.attraction.controllers;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import ru.pet_projects.attraction.entities.Attraction;
 import ru.pet_projects.attraction.repository.AttractionRepository;
 
@@ -30,5 +29,11 @@ public class AttractionController {
         return attractionRepository
                 .findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Attraction not found"));
+    }
+
+    @PostMapping("/attraction")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Attraction create(@RequestBody Attraction attraction) {
+        return attractionRepository.save(attraction);
     }
 }

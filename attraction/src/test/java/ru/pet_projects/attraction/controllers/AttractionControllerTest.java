@@ -1,5 +1,7 @@
 package ru.pet_projects.attraction.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -35,6 +37,30 @@ class AttractionControllerTest {
         mockMvc.perform(get("/attraction/1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Name"))
+                .andExpect(jsonPath("$.creationDate").value(LocalDate.EPOCH.toString()))
+                .andExpect(jsonPath("$.description").value("Description"))
+                .andExpect(jsonPath("$.kindOfAttraction").value(KindOfAttraction.OTHER.toString()));
+    }
+
+    @Test
+    void createAttractionTest() throws Exception{
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        Attraction attractionJson = new Attraction(null, "Name", LocalDate.EPOCH,
+                "Description", KindOfAttraction.OTHER, null, null);
+
+        Attraction attraction = new Attraction(1L, "Name", LocalDate.EPOCH,
+                "Description", KindOfAttraction.OTHER, null, null);
+        when(attractionRepository.save(any(Attraction.class))).thenReturn(attraction);
+
+        mockMvc.perform(post("/attraction")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(attractionJson)))
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Name"))
                 .andExpect(jsonPath("$.creationDate").value(LocalDate.EPOCH.toString()))
