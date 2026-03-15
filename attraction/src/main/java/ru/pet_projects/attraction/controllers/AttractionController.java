@@ -36,4 +36,20 @@ public class AttractionController {
     public Attraction create(@RequestBody Attraction attraction) {
         return attractionRepository.save(attraction);
     }
+
+    @PutMapping("/attraction/{id}")
+    public Attraction update(@PathVariable Long id, @RequestBody Attraction attraction) {
+        return attractionRepository
+                .findById(id)
+                .map(a-> {
+                    a.setName(attraction.getName());
+                    a.setCreationDate(attraction.getCreationDate());
+                    a.setDescription(attraction.getDescription());
+                    a.setKindOfAttraction(attraction.getKindOfAttraction());
+                    a.setCity(attraction.getCity());
+                    a.setExcursionList(attraction.getExcursionList());
+                    return attractionRepository.save(a);
+                })
+                .orElseThrow(() -> new EntityNotFoundException("Attraction not found"));
+    }
 }

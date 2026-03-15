@@ -67,4 +67,30 @@ class AttractionControllerTest {
                 .andExpect(jsonPath("$.description").value("Description"))
                 .andExpect(jsonPath("$.kindOfAttraction").value(KindOfAttraction.OTHER.toString()));
     }
+
+    @Test
+    void updateAttractionTest() throws Exception {
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        Attraction attractionOld = new Attraction(null, "Names", LocalDate.EPOCH,
+                "Descriptions", KindOfAttraction.CIRCUS, null, null);
+        when(attractionRepository.findById(1L)).thenReturn(Optional.of(attractionOld));
+
+        Attraction attraction = new Attraction(1L, "Name", LocalDate.EPOCH,
+                "Description", KindOfAttraction.OTHER, null, null);
+        when(attractionRepository.save(any(Attraction.class))).thenReturn(attraction);
+
+        mockMvc.perform(put("/attraction/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(attraction)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Name"))
+                .andExpect(jsonPath("$.creationDate").value(LocalDate.EPOCH.toString()))
+                .andExpect(jsonPath("$.description").value("Description"))
+                .andExpect(jsonPath("$.kindOfAttraction").value(KindOfAttraction.OTHER.toString()));
+
+    }
 }
