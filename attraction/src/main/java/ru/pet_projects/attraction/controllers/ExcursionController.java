@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 public class ExcursionController {
 
-    private ExcursionRepository excursionRepository;
+    private final ExcursionRepository excursionRepository;
 
     @Autowired
     public ExcursionController(ExcursionRepository excursionRepository) {
