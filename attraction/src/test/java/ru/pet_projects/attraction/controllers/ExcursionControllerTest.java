@@ -1,19 +1,16 @@
 package ru.pet_projects.attraction.controllers;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.pet_projects.attraction.entities.Attraction;
 import ru.pet_projects.attraction.entities.Excursion;
-import ru.pet_projects.attraction.entities.KindOfAttraction;
 import ru.pet_projects.attraction.repository.ExcursionRepository;
 
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -32,9 +29,7 @@ class ExcursionControllerTest {
     @Test
     void getByIdTest() throws Exception{
         Excursion excursion = new Excursion(1L, "Name",
-                "Description", List.of(new Attraction(1L, "Attraction",
-                LocalDate.EPOCH, "attraction", KindOfAttraction.OTHER,
-                null, null)));
+                "Description", null);
         when(excursionRepository.findById(1L)).thenReturn(Optional.of(excursion));
 
         mockMvc.perform(get("/excursion/1")
@@ -44,5 +39,24 @@ class ExcursionControllerTest {
                 .andExpect(jsonPath("$.name").value("Name"))
                 .andExpect(jsonPath("$.description").value("Description"))
                 .andExpect(jsonPath("$.attractionList[0].id").value(1));
+    }
+
+    @Test
+    void createTest() throws Exception{
+
+        Excursion excursionJson = new Excursion(null, "Name",
+                "Description", null);
+
+        Excursion excursion = new Excursion(1L, "Name",
+                "Description",null);
+        when(excursionRepository.save(any(Excursion.class))).thenReturn(excursion);
+
+        mockMvc.perform(post("/excursion")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(excursionJson)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Name"))
+                .andExpect(jsonPath("$.description").value("Description"));
     }
 }

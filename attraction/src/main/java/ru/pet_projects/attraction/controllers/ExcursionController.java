@@ -1,9 +1,8 @@
 package ru.pet_projects.attraction.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import ru.pet_projects.attraction.entities.Excursion;
 import ru.pet_projects.attraction.repository.ExcursionRepository;
 
@@ -29,5 +28,11 @@ public class ExcursionController {
         return excursionRepository
                 .findById(id)
                 .orElseThrow();
+    }
+
+    @PostMapping("/excursion")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Excursion create(@RequestBody Excursion excursion){
+        return excursionRepository.save(excursion);
     }
 }
