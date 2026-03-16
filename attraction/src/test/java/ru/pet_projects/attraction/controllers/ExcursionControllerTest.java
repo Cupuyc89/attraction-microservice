@@ -59,4 +59,25 @@ class ExcursionControllerTest {
                 .andExpect(jsonPath("$.name").value("Name"))
                 .andExpect(jsonPath("$.description").value("Description"));
     }
+
+    @Test
+    void updateTest() throws Exception{
+
+        Excursion excursionOld = new Excursion(1L, "Names",
+                "Descriptions", null);
+        when(excursionRepository.findById(1L)).thenReturn(Optional.of(excursionOld));
+
+        Excursion excursion = new Excursion(1L, "Name",
+                "Description",null);
+        when(excursionRepository.save(any(Excursion.class))).thenReturn(excursion);
+
+        mockMvc.perform(put("/excursion/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(excursion)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Name"))
+                .andExpect(jsonPath("$.description").value("Description"));
+
+    }
 }

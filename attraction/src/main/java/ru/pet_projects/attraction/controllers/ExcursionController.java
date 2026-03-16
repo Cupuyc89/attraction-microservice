@@ -1,5 +1,6 @@
 package ru.pet_projects.attraction.controllers;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +35,18 @@ public class ExcursionController {
     @ResponseStatus(HttpStatus.CREATED)
     public Excursion create(@RequestBody Excursion excursion){
         return excursionRepository.save(excursion);
+    }
+
+    @PutMapping("/excursion/{id}")
+    public Excursion update(@PathVariable Long id, @RequestBody Excursion excursion){
+        return excursionRepository
+                .findById(id)
+                .map(e -> {
+                    e.setName(excursion.getName());
+                    e.setDescription(excursion.getDescription());
+                    e.setAttractionList(excursion.getAttractionList());
+                    return excursionRepository.save(e);
+                })
+                .orElseThrow(()-> new EntityNotFoundException("Excursion not found"));
     }
 }
