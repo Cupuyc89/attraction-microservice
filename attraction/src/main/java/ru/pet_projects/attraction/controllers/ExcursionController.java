@@ -49,4 +49,13 @@ public class ExcursionController {
                 })
                 .orElseThrow(()-> new EntityNotFoundException("Excursion not found"));
     }
+
+    @DeleteMapping("/excursion/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void delete(@PathVariable Long id){
+        excursionRepository
+                .findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("Excursion not found"));
+        excursionRepository.deleteById(id);
+    }
 }

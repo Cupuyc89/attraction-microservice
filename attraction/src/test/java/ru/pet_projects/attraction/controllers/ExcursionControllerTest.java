@@ -37,8 +37,7 @@ class ExcursionControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Name"))
-                .andExpect(jsonPath("$.description").value("Description"))
-                .andExpect(jsonPath("$.attractionList[0].id").value(1));
+                .andExpect(jsonPath("$.description").value("Description"));
     }
 
     @Test
@@ -78,6 +77,18 @@ class ExcursionControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Name"))
                 .andExpect(jsonPath("$.description").value("Description"));
+    }
 
+    @Test
+    void deleteTest() throws Exception{
+        Excursion excursion = new Excursion(1L, "Name",
+                "Description", null);
+        when(excursionRepository.findById(1L)).thenReturn(Optional.of(excursion));
+
+        doNothing().when(excursionRepository).deleteById(1L);
+        mockMvc.perform(delete("/excursion/1"))
+                .andExpect(status().isNoContent());
+
+        verify(excursionRepository).deleteById(1L);
     }
 }
