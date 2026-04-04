@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /** This service organizes access to attractions.
  * There's an info about tickets.
- * There's an opportunity to book, to cansel the booking, to change tickets
+ * There's an opportunity to book, to cancel the booking, to change tickets
  * and to refuse to the ticket.
  * This service connects with the order service. */
 

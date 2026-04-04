@@ -4,7 +4,9 @@ package ru.pet_projects.ticket_service.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.pet_projects.ticket_service.dtos.TicketDto;
 import ru.pet_projects.ticket_service.entities.Ticket;
+import ru.pet_projects.ticket_service.mappers.TicketMapper;
 import ru.pet_projects.ticket_service.services.TicketService;
 
 import java.util.List;
@@ -14,31 +16,38 @@ import java.util.List;
 public class TicketController {
 
     private final TicketService ticketService;
+    private final TicketMapper ticketMapper;
 
     @Autowired
-    public TicketController(TicketService ticketService) {
+    public TicketController(TicketService ticketService,
+                            TicketMapper ticketMapper) {
         this.ticketService = ticketService;
+        this.ticketMapper = ticketMapper;
     }
 
     @GetMapping("/")
-    public List<Ticket> getAll(){
-        return ticketService.findAll();
+    public List<TicketDto> getAll(){
+        return ticketService
+                .findAll()
+                .stream()
+                .map(ticketMapper::toDto)
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public Ticket getById(@PathVariable Long id ){
-        return ticketService.findById(id);
+    public TicketDto getById(@PathVariable Long id ){
+        return ticketMapper.toDto(ticketService.findById(id));
     }
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public Ticket create(@RequestBody Ticket ticket){
-        return ticketService.save(ticket);
+    public Ticket create(@RequestBody TicketDto ticketDto){
+        return ticketService.save(ticketMapper.toEntity(ticketDto));
     }
 
     @PutMapping("/{id}")
-    public Ticket update(@RequestBody Ticket ticket, @PathVariable Long id){
-        return ticketService.update(ticket, id);
+    public Ticket update(@RequestBody TicketDto ticketDto, @PathVariable Long id){
+        return ticketService.update(ticketMapper.toEntity(ticketDto), id);
     }
 
     @DeleteMapping("/{id}")
