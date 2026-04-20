@@ -8,6 +8,7 @@ import ru.pet_projects.ticket_service.dtos.TicketDto;
 import ru.pet_projects.ticket_service.entities.Ticket;
 import ru.pet_projects.ticket_service.mappers.TicketMapper;
 import ru.pet_projects.ticket_service.services.TicketService;
+import ru.pet_projects.ticket_service.utils.TicketComparator;
 
 import java.util.List;
 
@@ -26,10 +27,12 @@ public class TicketController {
     }
 
     @GetMapping("/")
-    public List<TicketDto> getAll(){
+    public List<TicketDto> getAll(@RequestParam(name = "sort",
+            required = false, defaultValue = "startDate") String sortingField){
         return ticketService
                 .findAll()
                 .stream()
+                .sorted(TicketComparator.getComparator(sortingField))
                 .map(ticketMapper::toDto)
                 .toList();
     }
