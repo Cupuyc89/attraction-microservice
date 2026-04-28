@@ -1,12 +1,15 @@
 package ru.pet_projects.ticket_service.services;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import ru.pet_projects.ticket_service.dtos.TicketDto;
 import ru.pet_projects.ticket_service.entities.Booking;
 import ru.pet_projects.ticket_service.entities.Ticket;
+import ru.pet_projects.ticket_service.mappers.TicketMapper;
 import ru.pet_projects.ticket_service.repository.TicketRepository;
 
 import java.time.LocalDate;
@@ -16,71 +19,98 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@WebMvcTest(TicketServiceImp.class)
+@ExtendWith(MockitoExtension.class)
 class TicketServiceTest{
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockitoBean
+    @Mock
     private TicketRepository ticketRepository;
 
-    @Test
-    void getByIdTest(){
-        Ticket ticket =  new Ticket(1L, 1L, 1234,
+    @Mock
+    private TicketMapper ticketMapper;
+
+    @InjectMocks
+    private TicketServiceImp ticketService;
+
+    private Ticket ticket;
+    private TicketDto ticketDto;
+
+    @BeforeEach
+    void initTickets(){
+        ticket = new Ticket(1L, 1L, 1234,
                 LocalDate.of(2026,8,20),
                 LocalDate.of(2026,8,30),
                 Booking.BOOKED);
-        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
-        Ticket newTicket = ticketRepository.findById(1L).orElseThrow();
 
-        assertEquals(newTicket.getId(),ticket.getId());
-        assertEquals(newTicket.getExcursionId(),ticket.getExcursionId());
-        assertEquals(newTicket.getPrice(),ticket.getPrice());
-        assertEquals(newTicket.getDateOfStartExcursion(),ticket.getDateOfStartExcursion());
-        assertEquals(newTicket.getDateOfEndExcursion(),ticket.getDateOfEndExcursion());
-        assertEquals(newTicket.getBooking(),ticket.getBooking());
+        ticketDto = new TicketDto(1L, 1L, 1234,
+                LocalDate.of(2026,8,20),
+                LocalDate.of(2026,8,30),
+                Booking.BOOKED);
+    }
+
+    @Test
+    void getByIdTest(){
+        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+        when(ticketMapper.toDto(any(Ticket.class))).thenReturn(ticketDto);
+
+        TicketDto newTicket = ticketService.findById(1L);
+
+        assertEquals(newTicket.id(),ticket.getId());
+        assertEquals(newTicket.excursionId(),ticket.getExcursionId());
+        assertEquals(newTicket.price(),ticket.getPrice());
+        assertEquals(newTicket.dateOfStartExcursion(),ticket.getDateOfStartExcursion());
+        assertEquals(newTicket.dateOfEndExcursion(),ticket.getDateOfEndExcursion());
+        assertEquals(newTicket.booking(),ticket.getBooking());
     }
 
     @Test
     void createTest(){
-        Ticket ticket =  new Ticket(1L, 1L, 1234,
+        TicketDto responseTicket =  new TicketDto(null, 1L, 1234,
                 LocalDate.of(2026,8,20),
                 LocalDate.of(2026,8,30),
                 Booking.BOOKED);
+
+        when(ticketMapper.toEntity(any(TicketDto.class))).thenReturn(ticket);
         when(ticketRepository.save(any(Ticket.class))).thenReturn(ticket);
+        when(ticketMapper.toDto(any(Ticket.class))).thenReturn(ticketDto);
 
-        Ticket ticketNew =  new Ticket(null, 1L, 1234,
-                LocalDate.of(2026,8,20),
-                LocalDate.of(2026,8,30),
-                Booking.BOOKED);
-        Ticket newTicket = ticketRepository.save(ticketNew);
+        TicketDto newTicket = ticketService.save(responseTicket);
 
-        assertEquals(newTicket.getId(),ticket.getId());
-        assertEquals(newTicket.getExcursionId(),ticket.getExcursionId());
-        assertEquals(newTicket.getPrice(),ticket.getPrice());
-        assertEquals(newTicket.getDateOfStartExcursion(),ticket.getDateOfStartExcursion());
-        assertEquals(newTicket.getDateOfEndExcursion(),ticket.getDateOfEndExcursion());
-        assertEquals(newTicket.getBooking(),ticket.getBooking());
+        assertEquals(newTicket.id(),ticket.getId());
+        assertEquals(newTicket.excursionId(),ticket.getExcursionId());
+        assertEquals(newTicket.price(),ticket.getPrice());
+        assertEquals(newTicket.dateOfStartExcursion(),ticket.getDateOfStartExcursion());
+        assertEquals(newTicket.dateOfEndExcursion(),ticket.getDateOfEndExcursion());
+        assertEquals(newTicket.booking(),ticket.getBooking());
     }
 
     @Test
     void updateTest(){
-        Ticket newTicket =  new Ticket(1L, 1L, 1234,
-                LocalDate.of(2026,8,20),
-                LocalDate.of(2026,8,30),
+        TicketDto responseTicket =  new TicketDto(1L, 2L, 4321,
+                LocalDate.of(2026,8,21),
+                LocalDate.of(2026,8,31),
                 Booking.BOOKED);
-        when(ticketRepository.save(any(Ticket.class))).thenReturn(newTicket);
-        Ticket updatedTicket = ticketRepository.save(newTicket);
 
-        assertEquals(newTicket.getExcursionId(), updatedTicket.getExcursionId());
+        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+        when(ticketRepository.save(any(Ticket.class))).thenReturn(ticket);
+        when(ticketMapper.toDto(any(Ticket.class))).thenReturn(responseTicket);
+
+        TicketDto updatedTicket = ticketService.update(responseTicket, responseTicket.id());
+
+        assertEquals(responseTicket.excursionId(), updatedTicket.excursionId());
+        assertEquals(responseTicket.price(), updatedTicket.price());
+        assertEquals(responseTicket.dateOfStartExcursion(), updatedTicket.dateOfStartExcursion());
+        assertEquals(responseTicket.dateOfEndExcursion(), updatedTicket.dateOfEndExcursion());
     }
 
     @Test
     void deleteTest(){
-        Long id = 1L;
-        ticketRepository.deleteById(id);
+        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+        when(ticketMapper.toDto(any(Ticket.class))).thenReturn(ticketDto);
 
-        verify(ticketRepository).deleteById(id);
+        TicketDto deletingTicket = ticketService.findById(1L);
+
+        ticketService.deleteById(deletingTicket.id());
+
+        verify(ticketRepository).deleteById(deletingTicket.id());
     }
 }
