@@ -1,6 +1,7 @@
 package ru.pet_projects.ticket_service.controllers;
 
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -47,6 +48,16 @@ class TicketControllerTest {
                 .andExpect(jsonPath("$.dateOfStartExcursion").value("2026-08-20"))
                 .andExpect(jsonPath("$.dateOfEndExcursion").value("2026-08-30"))
                 .andExpect(jsonPath("$.booking").value("BOOKED"));
+    }
+
+    @Test
+    void getByIdNotFoundTest() throws Exception{
+        when(ticketService.findById(anyLong()))
+                .thenThrow(new EntityNotFoundException("Doesn't exist Ticket with id "));
+
+        mockMvc.perform(get("/ticket/111"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Entity not found"));
     }
 
     @Test

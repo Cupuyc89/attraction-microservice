@@ -14,6 +14,9 @@ import java.util.List;
 @Service
 public class TicketServiceImp implements TicketService{
 
+    private final static String NOT_FOUND_MESSAGE =
+                        "Doesn't exist Ticket with id ";
+
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
 
@@ -39,7 +42,8 @@ public class TicketServiceImp implements TicketService{
         return ticketRepository
                 .findById(id)
                 .map(ticketMapper::toDto)
-                .orElseThrow(()->new EntityNotFoundException(""));
+                .orElseThrow(()->
+                        new EntityNotFoundException(NOT_FOUND_MESSAGE + id));
     }
 
     @Override
@@ -61,7 +65,7 @@ public class TicketServiceImp implements TicketService{
                 })
                 .map(ticketMapper::toDto)
                 .orElseThrow(() ->
-                        new EntityNotFoundException("Ticket is not found."));
+                        new EntityNotFoundException(NOT_FOUND_MESSAGE + id));
     }
 
     @Override
