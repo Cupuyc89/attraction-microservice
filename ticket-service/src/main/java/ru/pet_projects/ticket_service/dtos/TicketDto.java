@@ -13,6 +13,6 @@ public record TicketDto(Long id,
                         @NotNull @Positive int price,
                         @FutureOrPresent @NotNull LocalDate dateOfStartExcursion,
                         @Future @NotNull LocalDate dateOfEndExcursion,
-                        Booking booking) {
+                        @NotNull Booking booking) {
 
 }
