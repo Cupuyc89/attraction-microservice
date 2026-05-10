@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now());
     }
 
-    @ExceptionHandler(exception = {
+    @ExceptionHandler({
             IllegalArgumentException.class,
             IllegalStateException.class,
             ValidationException.class

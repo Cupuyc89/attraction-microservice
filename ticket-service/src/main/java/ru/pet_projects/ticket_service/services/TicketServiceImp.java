@@ -48,6 +48,10 @@ public class TicketServiceImp implements TicketService{
 
     @Override
     public TicketDto save(TicketDto ticketDto) {
+
+        if (ticketDto.id() != null)
+            throw new IllegalArgumentException("ID should be null");
+
         Ticket ticket = ticketRepository.save(ticketMapper.toEntity(ticketDto));
         return ticketMapper.toDto(ticket);
     }

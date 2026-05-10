@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TicketController.class)
@@ -72,7 +73,7 @@ class TicketControllerTest {
         mockMvc.perform(post("/ticket/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"id\":\"null\",\"excursionId\":\"1\"," +
-                                "\"price\":\"1234\"}" +
+                                "\"price\":\"1234\"," +
                                 "\"dateOfStartExcursion\":\"2026-08-20\"," +
                                 "\"dateOfEndExcursion\":\"2026-08-30\"," +
                                 "\"booking\":\"BOOKED\"}"))
@@ -83,6 +84,25 @@ class TicketControllerTest {
                 .andExpect(jsonPath("$.dateOfStartExcursion").value("2026-08-20"))
                 .andExpect(jsonPath("$.dateOfEndExcursion").value("2026-08-30"))
                 .andExpect(jsonPath("$.booking").value("BOOKED"));
+    }
+
+    @Test
+    void testShouldIllegalArgumentExceptionWhenCreate() throws Exception{
+
+        when(ticketService.save(any(TicketDto.class)))
+                .thenThrow(new IllegalArgumentException("ID should be null"));
+
+        mockMvc.perform(post("/ticket/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"id\":\"1\",\"excursionId\":\"1\"," +
+                                "\"price\":\"1234\"," +
+                                "\"dateOfStartExcursion\":\"2026-08-20\"," +
+                                "\"dateOfEndExcursion\":\"2026-08-30\"," +
+                                "\"booking\":\"BOOKED\"}"))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message")
+                        .value("Bad Request"));
     }
 
     @Test
