@@ -1,6 +1,7 @@
 package ru.pet_projects.ticket_service.controllers;
 
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -33,12 +34,12 @@ public class TicketController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public TicketDto create(@RequestBody TicketDto ticketDto){
+    public TicketDto create(@RequestBody @Valid TicketDto ticketDto){
         return ticketService.save(ticketDto);
     }
 
     @PutMapping("/{id}")
-    public TicketDto update(@RequestBody TicketDto ticketDto, @PathVariable Long id){
+    public TicketDto update(@RequestBody @Valid TicketDto ticketDto, @PathVariable Long id){
         return ticketService.update(ticketDto, id);
     }
 
